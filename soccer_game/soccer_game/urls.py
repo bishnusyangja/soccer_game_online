@@ -15,7 +15,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from rest_framework.routers import DefaultRouter
+
+from soccer_game.views import SwaggerView
+from users.views import UserAPIView, AppAuthTokenView
+
+router = DefaultRouter()
+
+router.register(r'users/api', UserAPIView)
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('soc-admin/', admin.site.urls),
+
+    path('api/auth-token/', AppAuthTokenView.as_view()),
+    path('docs/sw-api/', SwaggerView.as_view())
+
 ]
+
+urlpatterns += router.urls

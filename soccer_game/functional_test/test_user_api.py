@@ -9,7 +9,6 @@ from users.models import User
 
 class UserAPITestCase(TestCase):
     client = APIClient()
-    headers = {}
     url = '/users/api/'
 
     def setUp(self):
@@ -18,61 +17,51 @@ class UserAPITestCase(TestCase):
         user = mommy.make(User, email=username, is_staff=True)
         user.set_password(password)
         user.save()
-        resp = self.client.post('/api/auth-token/', data={'username': username, 'password': password})
-        self.auth_token = resp.json().get('token', '')
-        self.headers = {'HTTP_AUTHORIZATION': f'Token {self.auth_token}', 'CONTENT_TYPE': 'application/json'}
+        self.client.login(username=username, password=password)
 
-    def test_user_list_api_with_no_headers(self):
+    def test_user_list(self):
         resp = self.client.get(self.url)
-        self.assertEqual(resp.status_code, 401)
-
-    def test_user_list_api_with_authorization_headers(self):
-        resp = self.client.get(self.url, **self.headers)
         self.assertEqual(resp.status_code, 200)
 
     def test_user_list_api_response_content(self):
         cnt = 3
         mommy.make(User, cnt)
-        resp = self.client.get(self.url, **self.headers)
+        resp = self.client.get(self.url)
         self.assertEqual(resp.status_code, 200)
         content = resp.json()
         self.assertEqual(content['count'], cnt+1)
-        self.assertIn('email', content[0].keys())
-        self.assertIn('first_name', content[0].keys())
-        self.assertIn('last_name', content[0].keys())
-        self.assertIn('mobile', content[0].keys())
-        self.assertIn('is_active', content[0].keys())
-        self.assertIn('pk', content[0].keys())
+        results = content['results']
+        self.assertIn('email', results[0].keys())
+        self.assertIn('first_name', results[0].keys())
+        self.assertIn('last_name', results[0].keys())
+        self.assertIn('mobile', results[0].keys())
+        self.assertIn('is_active', results[0].keys())
+        self.assertIn('pk', results[0].keys())
 
-    def test_user_registration_api_with_no_headers(self):
+    def test_user_create_with_no_data(self):
         data = {}
         resp = self.client.post(self.url, data=data)
-        self.assertEqual(resp.status_code, 401)
-
-    def test_user_registration_api_with_headers_but_no_data(self):
-        data = {}
-        resp = self.client.post(self.url, data=data, **self.headers)
         self.assertEqual(resp.status_code, 400)
 
-    def test_user_registration_api_with_headers_and_data(self):
+    def test_user_create_with_data(self):
         data = {'email': 'nepalisheaven@gmail.com', 'first_name': 'Ramesh', 'last_name': 'Bhandari'}
-        resp = self.client.post(self.url, data=data, **self.headers)
-        self.assertEqual(resp.status_code, 200)
+        resp = self.client.post(self.url, data=data)
+        self.assertEqual(resp.status_code, 201)
 
     def test_user_update_api_with_patch(self):
         user = mommy.make(User)
         data = {'is_active': True}
-        resp = self.client.patch(f'{self.url}{user.pk}/', data=data, **self.headers)
+        url = f'{self.url}{user.pk}/'
+        resp = self.client.patch(url, data=data, content_type="application/json")
         self.assertEqual(resp.status_code, 200)
 
     def test_user_update_api_with_put(self):
         user = mommy.make(User)
         data = {}
-        resp = self.client.put(f'{self.url}{user.pk}/', data=json.dumps(data), **self.headers)
+        resp = self.client.put(f'{self.url}{user.pk}/', data=data, content_type="application/json")
         self.assertEqual(resp.status_code, 400)
 
     def test_user_delete_api(self):
-        # todo: is_deleted not implemented in user model
         user = mommy.make(User)
-        resp = self.client.delete(f'{self.url}{user.pk}/', **self.headers)
+        resp = self.client.delete(f'{self.url}{user.pk}/')
         self.assertEqual(resp.status_code, 204)
