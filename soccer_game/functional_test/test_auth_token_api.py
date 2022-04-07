@@ -1,5 +1,3 @@
-import json
-
 from django.test import TestCase
 from model_mommy import mommy
 from rest_framework.test import APIClient
@@ -15,8 +13,8 @@ class AuthTokenAPITestCase(TestCase):
     url = "/api/auth-token/"
 
     def setUp(self):
-        self.username = 'bishnu.bhattarai@infynitee.com.au'
-        self.password = 1
+        self.username = 'bishnu.bhattarai@gmail.com'
+        self.password = '1'
         user = mommy.make(User, email=self.username, is_staff=True, is_superuser=True)
         user.set_password(self.password)
         user.save()

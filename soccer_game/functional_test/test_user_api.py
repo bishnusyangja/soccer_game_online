@@ -13,8 +13,8 @@ class UserAPITestCase(TestCase):
     url = '/users/api/'
 
     def setUp(self):
-        username = 'bishnu.bhattarai@infynitee.com.au'
-        password = 1
+        username = 'bishnu.bhattarai@gmail.com'
+        password = '1'
         user = mommy.make(User, email=username, is_staff=True)
         user.set_password(password)
         user.save()
@@ -55,7 +55,7 @@ class UserAPITestCase(TestCase):
         self.assertEqual(resp.status_code, 400)
 
     def test_user_registration_api_with_headers_and_data(self):
-        data = {'email': 'sunyahealthnepal@gmail.com', 'first_name': 'Ramesh', 'last_name': 'Bhandari'}
+        data = {'email': 'nepalisheaven@gmail.com', 'first_name': 'Ramesh', 'last_name': 'Bhandari'}
         resp = self.client.post(self.url, data=data, **self.headers)
         self.assertEqual(resp.status_code, 200)
 
