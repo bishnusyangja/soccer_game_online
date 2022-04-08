@@ -22,7 +22,7 @@ from users.views import UserAPIView, AppAuthTokenView
 
 router = DefaultRouter()
 
-router.register(r'users/api', UserAPIView)
+router.register(r'users', UserAPIView)
 
 
 urlpatterns = [

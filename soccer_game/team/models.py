@@ -24,11 +24,13 @@ class Team(models.Model):
 
     def team_value(self):
         player_value = sum([player.value for player in self.players.all()])
-        return self.value+player_value
+        return self.value + player_value
 
     def get_team_value(self):
         return "$ {}".format(str(self.team_value()))
 
+    def get_user(self):
+        return {'pk': self.user.pk, 'name': self.user.name}
 
 
 class Player(models.Model):
@@ -36,7 +38,7 @@ class Player(models.Model):
     last_name = models.CharField(max_length=50)
     age = models.PositiveSmallIntegerField()
     country = models.CharField(max_length=50)
-    positions = models.CharField(max_length=20, choices=POSITION_LIST)
+    position = models.CharField(max_length=20, choices=POSITION_LIST)
     team = models.ForeignKey(Team, related_name="players", on_delete=models.PROTECT)
     value = models.IntegerField()
 
