@@ -8,6 +8,7 @@ from users.models import User
 
 
 class UserAPITestCase(TestCase):
+    # for patch and put request this APIClient needs content_type="application/json"
     client = APIClient()
     url = '/users/api/'
 
