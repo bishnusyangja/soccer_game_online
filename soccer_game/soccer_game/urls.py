@@ -22,13 +22,15 @@ from users.views import UserAPIView, AppAuthTokenView
 
 router = DefaultRouter()
 
-router.register(r'users', UserAPIView)
+router.register(r'user', UserAPIView)
+router.register(r'team', UserAPIView)
+router.register(r'player', UserAPIView)
 
 
 urlpatterns = [
     path('soc-admin/', admin.site.urls),
 
-    path('api/auth-token/', AppAuthTokenView.as_view()),
+    path('api/login/', AppAuthTokenView.as_view()),
     path('docs/sw-api/', SwaggerView.as_view())
 
 ]
