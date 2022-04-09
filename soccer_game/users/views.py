@@ -1,9 +1,10 @@
 import random
 
 import names
+from rest_framework import mixins
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet
 
 from team.helpers import create_team
 from users.models import User
@@ -14,7 +15,12 @@ class AppAuthTokenView(ObtainAuthToken):
     authentication_classes = ()
 
 
-class UserAPIView(ModelViewSet):
+class UserAPIView(
+            mixins.RetrieveModelMixin,
+            mixins.ListModelMixin,
+            mixins.UpdateModelMixin,
+            GenericViewSet
+        ):
     permission_classes = (IsAuthenticated, )
     serializer_class = UserSerializer
     queryset = User.objects.none()
@@ -32,3 +38,10 @@ class UserAPIView(ModelViewSet):
             except Exception as e:
                 print("Exception at Team Creation")
         return response
+
+
+class UserRegisterAPIView(mixins.CreateModelMixin,
+                   GenericViewSet):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = UserSerializer
+    queryset = User.objects.none()

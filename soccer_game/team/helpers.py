@@ -33,7 +33,7 @@ def create_team(user):
     [Player(
         first_name = names.get_first_name(),
         last_name = names.get_last_name(),
-        age = random.choice(range(20, 40)),
+        age = random.choice(range(18, 40)),
         country = random.choice(settings.countries),
         position = PLAYER_POSITION[i],
         value = DEFAULT_PLAYER_VALUE,

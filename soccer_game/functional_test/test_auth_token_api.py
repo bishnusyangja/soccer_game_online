@@ -10,7 +10,7 @@ class AuthTokenAPITestCase(TestCase):
     headers = {}
     username = ''
     password = ''
-    url = "/api/auth-token/"
+    url = "/api/login/"
 
     def setUp(self):
         self.username = 'bishnu.bhattarai@gmail.com'

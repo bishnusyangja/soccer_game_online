@@ -18,19 +18,21 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from soccer_game.views import SwaggerView
-from users.views import UserAPIView, AppAuthTokenView
+from team.views import TeamAPIView, PlayerAPIView
+from users.views import UserAPIView, AppAuthTokenView, UserRegisterAPIView
 
 router = DefaultRouter()
 
+router.register(r'register', UserRegisterAPIView)
 router.register(r'user', UserAPIView)
-router.register(r'team', UserAPIView)
-router.register(r'player', UserAPIView)
+router.register(r'team', TeamAPIView)
+router.register(r'player', PlayerAPIView)
 
 
 urlpatterns = [
     path('soc-admin/', admin.site.urls),
 
-    path('api/login/', AppAuthTokenView.as_view()),
+    path('login/', AppAuthTokenView.as_view()),
     path('docs/sw-api/', SwaggerView.as_view())
 
 ]

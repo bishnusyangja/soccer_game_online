@@ -73,7 +73,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
         'libraries' : {
-            'staticfiles': 'django.templatetags.static',
+            'staticfiles': 'django.templatetags.static', # added to fix swagger api
         }
         },
     },
@@ -148,7 +148,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema', # for swagger
 
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
-    'PAGE_SIZE': 50,
+    'PAGE_SIZE': 30,
     'PAGE_SIZE_PARAM': 'page_size',  # overrides, using `?page_size=xxx`.
     'MAX_PAGE_SIZE': 1000,  # Maximum limit for `?page_size=xxx`.
 
