@@ -1,11 +1,13 @@
 import random
 
 import names
+from django.http import Http404
 from rest_framework import mixins
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
+from soccer_game.permissions import PublicPermission
 from team.helpers import create_team
 from users.models import User
 from users.serializer import UserSerializer
@@ -17,7 +19,6 @@ class AppAuthTokenView(ObtainAuthToken):
 
 class UserAPIView(
             mixins.RetrieveModelMixin,
-            mixins.ListModelMixin,
             mixins.UpdateModelMixin,
             GenericViewSet
         ):
@@ -25,15 +26,16 @@ class UserAPIView(
     serializer_class = UserSerializer
     queryset = User.objects.none()
 
-    def get_queryset(self):
-        if self.request.user.is_staff:
-            return User.objects.all()
-        return User.objects.filter(self.request.user.pk)
+    def get_object(self):
+        lookup = self.kwargs.get("pk")
+        if lookup == "profile":
+            return self.request.user
+        raise Http404
 
 
 class UserRegisterAPIView(mixins.CreateModelMixin,
                    GenericViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (PublicPermission, )
     serializer_class = UserSerializer
     queryset = User.objects.none()
 
