@@ -30,6 +30,13 @@ class UserAPIView(
             return User.objects.all()
         return User.objects.filter(self.request.user.pk)
 
+
+class UserRegisterAPIView(mixins.CreateModelMixin,
+                   GenericViewSet):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = UserSerializer
+    queryset = User.objects.none()
+
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         if response.status_code == 201:
@@ -38,10 +45,3 @@ class UserAPIView(
             except Exception as e:
                 print("Exception at Team Creation")
         return response
-
-
-class UserRegisterAPIView(mixins.CreateModelMixin,
-                   GenericViewSet):
-    permission_classes = (IsAuthenticated, )
-    serializer_class = UserSerializer
-    queryset = User.objects.none()
