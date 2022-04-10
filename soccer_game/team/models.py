@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from users.models import User
 
 POSITION_LIST = (
@@ -15,6 +16,9 @@ class Team(models.Model):
     country = models.CharField(max_length=50)
     user = models.OneToOneField(User, null=True, on_delete=models.PROTECT)
     price_value = models.IntegerField()
+
+    created_on = models.DateTimeField(_('Created on'), default=timezone.now)
+    modified_on = models.DateTimeField(_('Modified on'))
 
     def __str__(self):
         return self.name
@@ -32,6 +36,10 @@ class Team(models.Model):
     def get_user(self):
         return {'pk': self.user_id, 'name': self.user.name}
 
+    def save(self, *args, **kwargs):
+        self.modified_on = timezone.now()
+        super().save(*args, **kwargs)
+
 
 class Player(models.Model):
     first_name = models.CharField(max_length=50)
@@ -42,15 +50,35 @@ class Player(models.Model):
     team = models.ForeignKey(Team, related_name="players", on_delete=models.PROTECT)
     price_value = models.IntegerField()
 
+    created_on = models.DateTimeField(_('Created on'), default=timezone.now)
+    modified_on = models.DateTimeField(_('Modified on'))
+
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)
 
     def get_value(self):
         return "$ {}".format(str(self.value))
 
+    def get_full_name(self):
+        return "{} {}".format(self.first_name, self.last_name)
+
+    def save(self, *args, **kwargs):
+        self.modified_on = timezone.now()
+        super().save(*args, **kwargs)
+
 
 class PlayerMarket(models.Model):
     player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="market_history")
     team = models.ForeignKey(Team, on_delete=models.PROTECT, related_name="market_history")
     price_value = models.IntegerField()
+
+    created_on = models.DateTimeField(_('Created on'), default=timezone.now)
+    modified_on = models.DateTimeField(_('Modified on'))
+
+    def __str__(self):
+        return "{} -- {}".format(self.player.get_full_name(), self.team.name)
+
+    def save(self, *args, **kwargs):
+        self.modified_on = timezone.now()
+        super().save(*args, **kwargs)
 

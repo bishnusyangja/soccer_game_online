@@ -5,7 +5,7 @@ from rest_framework.test import APIClient
 from users.models import User
 
 
-class AuthTokenAPITestCase(TestCase):
+class UserLoginAPITestCase(TestCase):
     client = APIClient()
     headers = {}
     username = ''

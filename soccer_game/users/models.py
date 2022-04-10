@@ -37,7 +37,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    first_name = models.CharField(_('first name'), max_length=30, blank=True)
+    first_name = models.CharField(_('first name'), max_length=30,)
     last_name = models.CharField(_('last name'), max_length=150, blank=True)
     email = models.EmailField(_('email address'), unique=True)
     mobile = models.CharField(max_length=20, null=True, blank=True)
@@ -54,7 +54,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    created_on = models.DateTimeField(_('Created on'), default=timezone.now)
+    modified_on = models.DateTimeField(_('Modified on'))
 
     objects = UserManager()
 
@@ -71,16 +72,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.email = self.__class__.objects.normalize_email(self.email)
 
     def get_full_name(self):
-        """
-        Return the first_name plus the last_name, with a space in between.
-        """
-        full_name = '%s %s' % (self.first_name, self.last_name)
-        return full_name.strip()
-
-    def get_short_name(self):
-        """Return the short name for the user."""
-        return self.first_name
+        return "{} {}".format(self.first_name, self.last_name)
 
     def email_user(self, subject, message, from_email=None, **kwargs):
-        """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def save(self, *args, **kwargs):
+        self.modified_on = timezone.now()
+        super().save(*args, **kwargs)
