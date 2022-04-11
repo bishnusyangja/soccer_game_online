@@ -18,30 +18,28 @@ class UserAPITestCase(TestCase):
         user.save()
         self.client.login(username=username, password=password)
 
-    def test_user_list(self):
-        resp = self.client.get(self.url)
-        self.assertEqual(resp.status_code, 200)
-
-    # todo: load .env file
-    # todo: user activation
     def test_user_profile_api_response_content(self):
-        cnt = 3
-        mommy.make(User, cnt)
-        resp = self.client.get(self.url)
+        resp = self.client.get(f'{self.url}profile/')
         self.assertEqual(resp.status_code, 200)
         content = resp.json()
         self.assertIn('email', content.keys())
         self.assertIn('first_name', content.keys())
         self.assertIn('last_name', content.keys())
         self.assertIn('mobile', content.keys())
-        self.assertIn('is_active', content.keys())
+        self.assertIn('created_on', content.keys())
+        self.assertIn('modified_on', content.keys())
         self.assertIn('pk', content.keys())
 
     def test_user_update_api_with_patch(self):
-        data = {'first_name': "Ramesh"}
+        first_name = "Ramesh"
+        last_name = "Adhikari"
+        data = {'first_name': first_name, "last_name": last_name}
         url = f'{self.url}profile/'
         resp = self.client.patch(url, data=data, content_type="application/json")
         self.assertEqual(resp.status_code, 200)
+        content = resp.json()
+        self.assertEqual(content["first_name"], first_name)
+        self.assertEqual(content["last_name"], last_name)
 
     def test_user_update_api_with_put(self):
         data = {}

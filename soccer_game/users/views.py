@@ -47,3 +47,6 @@ class UserRegisterAPIView(mixins.CreateModelMixin,
             except Exception as e:
                 print("Exception at Team Creation")
         return response
+
+    def get_serializer_context(self):
+        return {"http_method": self.request.method}
