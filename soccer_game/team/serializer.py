@@ -5,6 +5,7 @@ from team.models import Player, Team
 
 class PlayerSerializer(serializers.ModelSerializer):
     pk = serializers.PrimaryKeyRelatedField(read_only=True)
+    team = serializers.DictField(source='get_team', read_only=True)
 
     class Meta:
         model = Player
@@ -13,7 +14,8 @@ class PlayerSerializer(serializers.ModelSerializer):
 
 class TeamSerializer(serializers.ModelSerializer):
     pk = serializers.PrimaryKeyRelatedField(read_only=True)
-    user = serializers.DictField(source='get_user')
+    user = serializers.DictField(source='get_user', read_only=True)
+    price_value = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Team

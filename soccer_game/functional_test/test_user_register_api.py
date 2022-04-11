@@ -19,6 +19,7 @@ class UserRegisterAPITestCase(TestCase):
         data = {'email': 'nepalisheaven@gmail.com', 'first_name': 'Ramesh', 'last_name': 'Bhandari'}
         resp = self.client.post(self.url, data=data)
         self.assertEqual(resp.status_code, 201)
+        # todo: test team and Player
 
     def test_user_create_with_logged_in_user(self):
         username = 'bishnu.bhattarai@gmail.com'

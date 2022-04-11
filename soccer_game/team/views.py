@@ -19,6 +19,7 @@ class TeamAPIView(mixins.RetrieveModelMixin,
 
 class PlayerAPIView(mixins.RetrieveModelMixin,
                    mixins.UpdateModelMixin,
+                   mixins.ListModelMixin,
                    GenericViewSet):
     permission_classes = (IsAuthenticated, )
     serializer_class = PlayerSerializer

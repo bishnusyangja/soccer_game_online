@@ -66,6 +66,9 @@ class Player(models.Model):
         self.modified_on = timezone.now()
         super().save(*args, **kwargs)
 
+    def get_team(self):
+        return {"pk": self.team.pk, "name": self.team.name}
+
 
 class PlayerMarket(models.Model):
     player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="market_history")
