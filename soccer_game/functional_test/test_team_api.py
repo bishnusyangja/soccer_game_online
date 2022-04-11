@@ -31,4 +31,9 @@ class PlayerAPITestCase(TestCase):
         self.assertIn('price_value', content)
 
     def test_team_update(self):
-        pass
+        data = {'name': 'ABC', 'country': 'XYZ'}
+        resp = self.client.patch(self.url, data=data, content_type="application/json")
+        self.assertEqual(resp.status_code, 200)
+        content = resp.json()
+        self.assertEqual(content['name'], data['name'])
+        self.assertEqual(content['country'], data['country'])
