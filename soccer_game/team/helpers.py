@@ -1,7 +1,9 @@
 import random
 
 import names
-from django.conf import settings
+from django.utils import timezone
+
+from soccer_game import settings
 from team.models import Team, Player
 
 
@@ -16,27 +18,29 @@ def get_random_team_name():
     if random.choice([0, 1]):
         team_name += " " + names.get_first_name()
     if random.choice([0, 1]):
-        team_name += " ", + random.choice(settings.countries)
+        team_name += " " + random.choice(settings.countries)
     team_name += " Club"
     return team_name
 
 
-def create_team(user):
+def create_team(user_id):
     team_name = get_random_team_name()
     team = Team(
         name = team_name,
         country = random.choice(settings.countries),
-        user = user,
-        value = DEFAULT_TEAM_VALUE
+        user_id = user_id,
+        price_value = DEFAULT_TEAM_VALUE
     )
     team.save()
-    [Player(
+    bulk_obj = [Player(
         first_name = names.get_first_name(),
         last_name = names.get_last_name(),
         age = random.choice(range(18, 40)),
         country = random.choice(settings.countries),
         position = PLAYER_POSITION[i],
-        value = DEFAULT_PLAYER_VALUE,
-        team = team
+        price_value = DEFAULT_PLAYER_VALUE,
+        team = team,
+        modified_on = timezone.now()
     )
      for i in range(TEAM_MEMBERS)]
+    Player.objects.bulk_create(bulk_obj)

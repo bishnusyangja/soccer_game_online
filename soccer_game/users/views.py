@@ -39,13 +39,13 @@ class UserRegisterAPIView(mixins.CreateModelMixin,
     serializer_class = UserSerializer
     queryset = User.objects.none()
 
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
         if response.status_code == 201:
             try:
-                create_team(request.user)
+                create_team(response.data['pk'])
             except Exception as e:
-                print("Exception at Team Creation")
+                print("Exception at Team Creation", e)
         return response
 
     def get_serializer_context(self):

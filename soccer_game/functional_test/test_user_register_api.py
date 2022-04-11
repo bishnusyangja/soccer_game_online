@@ -2,6 +2,7 @@ from django.test import TestCase
 from model_mommy import mommy
 from rest_framework.test import APIClient
 
+from team.models import Team, Player
 from users.models import User
 
 
@@ -19,7 +20,11 @@ class UserRegisterAPITestCase(TestCase):
         data = {'email': 'nepalisheaven@gmail.com', 'first_name': 'Ramesh', 'last_name': 'Bhandari'}
         resp = self.client.post(self.url, data=data)
         self.assertEqual(resp.status_code, 201)
-        # todo: test team and Player
+        # content = resp.json()
+        # team_list = Team.objects.filter(user_id=content['pk'])
+        # self.assertEqual(len(team_list), 1)
+        # player_list = Player.objects.filter(team=team_list[0])
+        # self.assertEqual(len(player_list), 20)
 
     def test_user_create_with_logged_in_user(self):
         username = 'bishnu.bhattarai@gmail.com'

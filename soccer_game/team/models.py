@@ -20,6 +20,9 @@ class Team(models.Model):
     created_on = models.DateTimeField(_('Created on'), default=timezone.now)
     modified_on = models.DateTimeField(_('Modified on'))
 
+    class Meta:
+        ordering = ("pk", )
+
     def __str__(self):
         return self.name
 
@@ -53,6 +56,9 @@ class Player(models.Model):
     created_on = models.DateTimeField(_('Created on'), default=timezone.now)
     modified_on = models.DateTimeField(_('Modified on'))
 
+    class Meta:
+        ordering = ("pk", )
+
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)
 
@@ -77,6 +83,9 @@ class PlayerMarket(models.Model):
 
     created_on = models.DateTimeField(_('Created on'), default=timezone.now)
     modified_on = models.DateTimeField(_('Modified on'))
+
+    class Meta:
+        ordering = ("pk", )
 
     def __str__(self):
         return "{} -- {}".format(self.player.get_full_name(), self.team.name)
