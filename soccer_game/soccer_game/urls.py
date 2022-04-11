@@ -25,13 +25,13 @@ router = DefaultRouter()
 
 router.register(r'register', UserRegisterAPIView)
 router.register(r'user', UserAPIView)
-router.register(r'team', TeamAPIView)
+# router.register(r'team', TeamAPIView)
 router.register(r'player', PlayerAPIView)
 
 
 urlpatterns = [
     path('soc-admin/', admin.site.urls),
-
+    path('team/', TeamAPIView.as_view()),
     path('login/', AppAuthTokenView.as_view()),
     path('docs/sw-api/', SwaggerView.as_view())
 

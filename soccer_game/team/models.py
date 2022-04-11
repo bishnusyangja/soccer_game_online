@@ -37,7 +37,7 @@ class Team(models.Model):
         return "$ {}".format(str(self.team_value()))
 
     def get_user(self):
-        return {'pk': self.user_id, 'name': self.user.name}
+        return {'pk': self.user_id, 'name': self.user.get_full_name()}
 
     def save(self, *args, **kwargs):
         self.modified_on = timezone.now()

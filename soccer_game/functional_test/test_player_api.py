@@ -1,5 +1,3 @@
-import json
-
 from django.test import TestCase
 from model_mommy import mommy
 from rest_framework.test import APIClient
@@ -22,10 +20,10 @@ class PlayerAPITestCase(TestCase):
         self.team = mommy.make(Team, user=self.user)
         self.client.login(username=username, password=password)
 
-    # def test_loggout_out_client(self):
-    #     self.client.logout()
-    #     resp = self.client.get(self.url)
-    #     self.assertEqual(resp.status_code, 401)
+    def test_loggout_out_client(self):
+        self.client.logout()
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, 401)
 
     def test_player_list(self):
         resp = self.client.get(self.url)
@@ -56,8 +54,3 @@ class PlayerAPITestCase(TestCase):
         resp = self.client.patch(url, data=data, content_type="application/json")
         self.assertEqual(resp.status_code, 200)
 
-    # def test_player_update_api_with_put(self):
-    #     user = mommy.make(User)
-    #     data = {}
-    #     resp = self.client.put(f'{self.url}{user.pk}/', data=data, content_type="application/json")
-    #     self.assertEqual(resp.status_code, 400)

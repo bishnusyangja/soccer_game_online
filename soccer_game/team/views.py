@@ -1,4 +1,5 @@
 from rest_framework import mixins
+from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
@@ -6,9 +7,7 @@ from team.models import Team, Player
 from team.serializer import TeamSerializer, PlayerSerializer
 
 
-class TeamAPIView(mixins.RetrieveModelMixin,
-                   mixins.UpdateModelMixin,
-                   GenericViewSet):
+class TeamAPIView(RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = TeamSerializer
     queryset = Team.objects.none()
