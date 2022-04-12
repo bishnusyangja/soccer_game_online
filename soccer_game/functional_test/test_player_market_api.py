@@ -60,8 +60,6 @@ class PlayerAPITestCase(TestCase):
         player = mommy.make(Player, team=self.team)
         player_2 = mommy.make(Player, team=self.team)
         market = mommy.make(PlayerMarket, player=player, team=self.team)
-        last_name = "ABC"
-        age = 35
         data = {'price_value': 500, 'player_id': player_2.pk}
         url = f'{self.url}{market.pk}/'
         resp = self.client.patch(url, data=data, content_type="application/json")
