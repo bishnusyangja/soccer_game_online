@@ -1,8 +1,11 @@
 from rest_framework import mixins
+from rest_framework.decorators import action
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from team.helpers import is_player_affordable, transfer_player_to_team
 from team.models import Team, Player, PlayerMarket
 from team.serializer import TeamSerializer, PlayerSerializer, PlayerMarketSerializer
 
@@ -41,3 +44,19 @@ class PlayerMarketAPIView(ModelViewSet):
         kwargs['team'] = Team.objects.get(user=self.request.user)
         kwargs['user'] = self.request.user
         return kwargs
+
+    @action(detail=True, methods=['GET'])
+    def buy(self):
+        team = self.request.user.team
+        player_market = self.get_object()
+        if not is_player_affordable(team, player_market.price_value):
+            return Response({'error': 'You can not afford this player'}, status=400)
+        try:
+            player = transfer_player_to_team(player_market, team)
+            data = {'team': {'pk': player.team.pk, 'name': player.team.name},
+                        'player': {'pk': player.pk, 'price_value': player.value, 'name': player.get_full_name()}}
+            return Response(data, status=200)
+        except Exception as e:
+            print("PlayerTransfer ", e)
+            data = {'error': 'Something went wrong. Try again later.'}
+            return Response(data, status=500)

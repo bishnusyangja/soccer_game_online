@@ -1,12 +1,6 @@
-import random
-
-import names
-from django.http import Http404
-from rest_framework import mixins
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import GenericViewSet
 
 from soccer_game.permissions import PublicPermission
 from team.helpers import create_team

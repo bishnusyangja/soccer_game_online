@@ -1,6 +1,7 @@
 import random
 
 import names
+from django.db import transaction
 from django.utils import timezone
 
 from soccer_game import settings
@@ -44,3 +45,41 @@ def create_team(user_id):
     )
      for i in range(TEAM_MEMBERS)]
     Player.objects.bulk_create(bulk_obj)
+
+
+def get_player_value(player):
+    return int(player.price_value * random.choice(range(10, 100)))
+
+
+def upgrade_player_value_and_team(player, team):
+    player.team = team
+    player.price_value = get_player_value(player)
+    player.save()
+    return player.price_value
+
+
+def deduct_new_team_value(team, price_value):
+    team -= price_value
+    team.save()
+
+
+def increase_old_team_value(team, price_value):
+    team.price_value += price_value
+    team.save()
+
+
+def is_player_affordable(team, price_value):
+    return team.price_value >= price_value
+
+
+def transfer_player_to_team(player_market, team):
+    with transaction.atomic():
+        player = Player.objects.select_for_update().get(pk=player_market.player.id)
+        old_team = Team.objects.select_for_update().get(pk=player_market.team.pk)
+        team = Team.objects.select_for_update().get(pk=team.pk)
+        upgrade_player_value_and_team(player, team)
+        price_value = player_market.price_value
+        deduct_new_team_value(team, price_value)
+        increase_old_team_value(old_team, price_value)
+        return player
+

@@ -28,7 +28,6 @@ router.register(r'player', PlayerAPIView)
 router.register(r'market-player', PlayerMarketAPIView)
 
 
-
 urlpatterns = [
     path('soc-admin/', admin.site.urls),
     path('user/profile/', UserAPIView.as_view()),
