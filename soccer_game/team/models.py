@@ -80,6 +80,7 @@ class PlayerMarket(models.Model):
     player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="market_history")
     team = models.ForeignKey(Team, on_delete=models.PROTECT, related_name="market_history")
     price_value = models.IntegerField()
+    description = models.TextField()
 
     created_on = models.DateTimeField(_('Created on'), default=timezone.now)
     modified_on = models.DateTimeField(_('Modified on'))
@@ -94,3 +95,8 @@ class PlayerMarket(models.Model):
         self.modified_on = timezone.now()
         super().save(*args, **kwargs)
 
+    def get_player(self):
+        return {'pk': self.player.pk, 'name': self.player.get_full_name()}
+
+    def get_team(self):
+        return {'pk': self.team.pk, 'name': self.team.name}

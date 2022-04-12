@@ -7,7 +7,6 @@ from users.models import User
 
 
 class UserRegisterAPITestCase(TestCase):
-    # for patch and put request this APIClient needs content_type="application/json"
     client = APIClient()
     url = '/register/'
 
@@ -18,7 +17,7 @@ class UserRegisterAPITestCase(TestCase):
 
     def test_user_create_with_data(self):
         data = {'email': 'nepalisheaven@gmail.com', 'first_name': 'Ramesh', 'last_name': 'Bhandari'}
-        resp = self.client.post(self.url, data=data)
+        resp = self.client.post(self.url, data=data, content_type="application/json")
         self.assertEqual(resp.status_code, 201)
         content = resp.json()
         team_list = Team.objects.filter(user_id=content['pk'])
@@ -32,7 +31,7 @@ class UserRegisterAPITestCase(TestCase):
         user = mommy.make(User, email=username, is_staff=True)
         user.set_password(password)
         user.save()
-        self.client.login(username=username, password=password)
+        self.client.login(username=username, password=password, content_type="application/json")
         data = {'email': 'nepalisheaven@gmail.com', 'first_name': 'Ramesh', 'last_name': 'Bhandari'}
         resp = self.client.post(self.url, data=data)
         self.assertEqual(resp.status_code, 403)

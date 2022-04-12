@@ -24,10 +24,10 @@ class UserLoginAPITestCase(TestCase):
         self.assertEqual(resp.status_code, 400)
 
     def test_api_auth_token_with_invalid_data(self):
-        resp = self.client.post(self.url, data={'username': self.username, 'password': 'abc'})
+        resp = self.client.post(self.url, data={'username': self.username, 'password': 'abc'}, content_type="application/json")
         self.assertEqual(resp.status_code, 400)
 
     def test_api_auth_token_with_valid_data(self):
-        resp = self.client.post(self.url, data={'username': self.username, 'password': self.password})
+        resp = self.client.post(self.url, data={'username': self.username, 'password': self.password}, content_type="application/json")
         self.assertEqual(resp.status_code, 200)
         self.assertIn('token', resp.json().keys())

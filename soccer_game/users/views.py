@@ -41,5 +41,7 @@ class UserRegisterAPIView(CreateAPIView):
                 print("Exception at Team Creation", e)
         return response
 
-    def get_serializer_context(self):
-        return {"http_method": self.request.method}
+    def get_serializer_context(self, *args, **kwargs):
+        kwargs = super().get_serializer_context(*args, **kwargs)
+        kwargs["http_method"] = self.request.method
+        return kwargs

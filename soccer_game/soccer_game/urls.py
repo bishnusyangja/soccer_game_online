@@ -18,12 +18,15 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from soccer_game.views import SwaggerView
-from team.views import TeamAPIView, PlayerAPIView
+from team.views import TeamAPIView, PlayerAPIView, PlayerMarketAPIView
 from users.views import UserAPIView, AppAuthTokenView, UserRegisterAPIView
 
 router = DefaultRouter()
 
+
 router.register(r'player', PlayerAPIView)
+router.register(r'market-player', PlayerMarketAPIView)
+
 
 
 urlpatterns = [
