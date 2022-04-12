@@ -16,7 +16,7 @@ class PlayerAPITestCase(TestCase):
         self.user = mommy.make(User, email=username, is_staff=True)
         self.user.set_password(password)
         self.user.save()
-        self.team = mommy.make(Team, user=self.user)
+        self.team = mommy.make(Team, user=self.user, price_value=500)
         self.client.login(username=username, password=password)
 
     def test_loggout_out_client(self):
@@ -75,3 +75,18 @@ class PlayerAPITestCase(TestCase):
         resp = self.client.delete(url)
         self.assertEqual(resp.status_code, 204)
 
+    def test_player_market_buy(self):
+        user = mommy.make(User)
+        team = mommy.make(Team, user=user)
+        player = mommy.make(Player, team=team, price_value=50)
+        market = mommy.make(PlayerMarket, player=player, team=team, price_value=200)
+        data = {'price_value': market.price_value}
+        url = f'{self.url}{market.pk}/buy/'
+        self.assertEqual(player.team, team)
+        resp = self.client.post(url, data=data, content_type="application/json")
+        self.assertEqual(resp.status_code, 200)
+        content = resp.json()
+        self.assertEqual(content['team']['pk'], self.team.pk)
+        self.assertGreater(content['player']['price_value'], player.price_value)
+        now_player = Player.objects.get(pk=player.pk)
+        self.assertEqual(now_player.team, self.team)

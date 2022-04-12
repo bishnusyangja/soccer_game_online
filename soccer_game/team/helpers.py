@@ -48,18 +48,18 @@ def create_team(user_id):
 
 
 def get_player_value(player):
-    return int(player.price_value * random.choice(range(10, 100)))
+    return int(player.price_value * 0.01 * random.choice(range(10, 100)))
 
 
 def upgrade_player_value_and_team(player, team):
     player.team = team
-    player.price_value = get_player_value(player)
+    player.price_value += get_player_value(player)
     player.save()
     return player.price_value
 
 
 def deduct_new_team_value(team, price_value):
-    team -= price_value
+    team.price_value -= price_value
     team.save()
 
 
