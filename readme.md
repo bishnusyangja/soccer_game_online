@@ -22,3 +22,18 @@
 - With each transfer, team budgets are updated.
 - When a player is transferred to another team, their value should be increased between 10 and 100 percent. Implement a random factor for this purpose.
 - Make it possible to perform all user actions via RESTful or GraphQL API, including authentication.
+
+
+
+# Answers are implemented in REST API
+- For the ease of use, I have used sqlite database, mysql or postgresql configuration can be changed quickly.
+- I have used django and djangorestframework for the REST API implementation.
+- To run the project following commands are needed
+  - cd soccer_game
+  - pip install -r requirements.txt (inside your virtual environment)
+  - python manage.py runserver
+- I have not added unittest as there we see most data base and API interaction, so I have used functional test cases in which data base action and API test included
+- All the functional test cases are in soccer_game/functional_test
+- To run the test cases, following commands are used.
+  - cd soccer_game
+  - python manage.py test
