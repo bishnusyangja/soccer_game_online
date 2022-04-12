@@ -16,7 +16,7 @@ class UserRegisterAPITestCase(TestCase):
         self.assertEqual(resp.status_code, 400)
 
     def test_user_create_with_data(self):
-        data = {'email': 'nepalisheaven@gmail.com', 'first_name': 'Ramesh', 'last_name': 'Bhandari'}
+        data = {'email': 'nepalisheaven@gmail.com', 'first_name': 'Ramesh', 'last_name': 'Bhandari', 'password': 'ac'}
         resp = self.client.post(self.url, data=data, content_type="application/json")
         self.assertEqual(resp.status_code, 201)
         content = resp.json()
@@ -24,6 +24,8 @@ class UserRegisterAPITestCase(TestCase):
         self.assertEqual(len(team_list), 1)
         player_list = Player.objects.filter(team=team_list[0])
         self.assertEqual(len(player_list), 20)
+        user = User.objects.get(pk=content['pk'])
+        self.assertTrue(user.check_password(data['password']))
 
     def test_user_create_with_logged_in_user(self):
         username = 'bishnu.bhattarai@gmail.com'

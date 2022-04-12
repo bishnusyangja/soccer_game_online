@@ -38,4 +38,5 @@ class UserRegisterAPIView(CreateAPIView):
     def get_serializer_context(self, *args, **kwargs):
         kwargs = super().get_serializer_context(*args, **kwargs)
         kwargs["http_method"] = self.request.method
+        kwargs['is_password'] = True
         return kwargs
