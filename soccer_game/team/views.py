@@ -47,21 +47,17 @@ class PlayerMarketAPIView(ModelViewSet):
 
     @action(detail=True, methods=['POST'])
     def buy(self, request, pk):
-        price_value_from_team = request.data.get('price_value')
         team = request.user.team
         player_market = self.get_object()
-        if price_value_from_team != player_market.price_value:
-            print('at price')
-            return Response({'error': 'Price mismatch'}, status=400)
+        if team == player_market.team:
+            return Response({'team': ['You can not allow to buy your own player']}, status=400)
         if not is_player_affordable(team, player_market.price_value):
-            print("at affordable")
-            return Response({'error': 'You can not afford this player'}, status=400)
+            return Response({'price_value': ['You can not afford this player']}, status=400)
         try:
             player = transfer_player_to_team(player_market, team)
             data = {'team': {'pk': player.team.pk, 'name': player.team.name},
                         'player': {'pk': player.pk, 'price_value': player.price_value, 'name': player.get_full_name()}}
             return Response(data, status=200)
         except Exception as e:
-            print("PlayerTransfer ", e)
             data = {'error': 'Something went wrong. Try again later.'}
             return Response(data, status=500)

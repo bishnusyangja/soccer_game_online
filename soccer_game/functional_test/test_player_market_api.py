@@ -42,6 +42,14 @@ class PlayerAPITestCase(TestCase):
         self.assertIn('created_on', content)
         self.assertIn('price_value', content)
 
+    def test_player_market_create_with_negative_price_value(self):
+        player = mommy.make(Player, team=self.team)
+        data = {'price_value': -100, 'player_id': player.pk}
+        resp = self.client.post(self.url, data=data, content_type="application/json")
+        self.assertEqual(resp.status_code, 400)
+        content = resp.json()
+        self.assertIn('price_value', content)
+
     def test_player_list_api_response_content(self):
         player_num = 5
         players = mommy.make(Player, player_num, team=self.team, )
@@ -59,7 +67,7 @@ class PlayerAPITestCase(TestCase):
     def test_player_market_update_api_with_patch(self):
         player = mommy.make(Player, team=self.team)
         player_2 = mommy.make(Player, team=self.team)
-        market = mommy.make(PlayerMarket, player=player, team=self.team)
+        market = mommy.make(PlayerMarket, player=player, team=self.team, price_value=10000)
         data = {'price_value': 500, 'player_id': player_2.pk}
         url = f'{self.url}{market.pk}/'
         resp = self.client.patch(url, data=data, content_type="application/json")
@@ -80,13 +88,22 @@ class PlayerAPITestCase(TestCase):
         team = mommy.make(Team, user=user)
         player = mommy.make(Player, team=team, price_value=50)
         market = mommy.make(PlayerMarket, player=player, team=team, price_value=200)
-        data = {'price_value': market.price_value}
         url = f'{self.url}{market.pk}/buy/'
         self.assertEqual(player.team, team)
-        resp = self.client.post(url, data=data, content_type="application/json")
+        resp = self.client.post(url)
         self.assertEqual(resp.status_code, 200)
         content = resp.json()
         self.assertEqual(content['team']['pk'], self.team.pk)
         self.assertGreater(content['player']['price_value'], player.price_value)
         now_player = Player.objects.get(pk=player.pk)
         self.assertEqual(now_player.team, self.team)
+
+    def test_market_with_same_team(self):
+        player = mommy.make(Player, team=self.team, price_value=50)
+        market = mommy.make(PlayerMarket, player=player, team=self.team, price_value=200)
+        url = f'{self.url}{market.pk}/buy/'
+        self.assertEqual(player.team, self.team)
+        resp = self.client.post(url)
+        self.assertEqual(resp.status_code, 400)
+        content = resp.json()
+        self.assertIn("team", content)

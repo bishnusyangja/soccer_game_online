@@ -30,19 +30,24 @@ class PlayerMarketSerializer(serializers.ModelSerializer):
     player_id = serializers.IntegerField()
     created_on = DateTimeSerializer(format='%Y-%m-%d %H:%M', required=False, read_only=True)
 
+    class Meta:
+        model = PlayerMarket
+        read_only_fields = ('description', )
+        fields = ('pk', 'player', 'player_id', 'team', 'created_on', 'price_value', 'description', )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = self.context.get('user')
+
+    def validate_price_value(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Amount must be greater than zero")
+        return value
 
     def validate_player_id(self, value):
         if not Player.objects.filter(team__user=self.user, pk=value).count():
             raise serializers.ValidationError(f'{value} is not valid player id')
         return value
-
-    class Meta:
-        model = PlayerMarket
-        read_only_fields = ('description', )
-        fields = ('pk', 'player', 'player_id', 'team', 'created_on', 'price_value', 'description', )
 
     def create(self, validated_data):
         validated_data['team'] = self.context.get('team')
